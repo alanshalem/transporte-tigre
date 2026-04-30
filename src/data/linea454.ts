@@ -82,8 +82,7 @@ export const linea454Services: Service[] = [
         },
       },
     ],
-    route:
-      'Río Tigre - Río Luján - Río Sarmiento - Río Capitán - Arroyo Chañá - Arroyo Cruz',
+    route: 'Río Tigre - Río Luján - Río Sarmiento - Río Capitán - Arroyo Chañá - Arroyo Cruz',
     duration: '02:30 HS',
     routeCoordinates: [],
   },
@@ -282,8 +281,7 @@ export const linea454Services: Service[] = [
         },
       },
     ],
-    route:
-      'Río Tigre - Río Luján - Río Sarmiento - Río Capitán - Desvío Arroyo Borches',
+    route: 'Río Tigre - Río Luján - Río Sarmiento - Río Capitán - Desvío Arroyo Borches',
     duration: '04:00 HS',
     routeCoordinates: [],
   },

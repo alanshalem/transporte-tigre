@@ -1,6 +1,23 @@
-export type DayOfWeek = 'lunes' | 'martes' | 'miercoles' | 'jueves' | 'viernes' | 'sabado' | 'domingo' | 'feriados';
+export type DayOfWeek =
+  | 'lunes'
+  | 'martes'
+  | 'miercoles'
+  | 'jueves'
+  | 'viernes'
+  | 'sabado'
+  | 'domingo'
+  | 'feriados';
 
-export const DAYS: DayOfWeek[] = ['lunes', 'martes', 'miercoles', 'jueves', 'viernes', 'sabado', 'domingo', 'feriados'];
+export const DAYS: DayOfWeek[] = [
+  'lunes',
+  'martes',
+  'miercoles',
+  'jueves',
+  'viernes',
+  'sabado',
+  'domingo',
+  'feriados',
+];
 
 export const DAY_LABELS: Record<DayOfWeek, string> = {
   lunes: 'Lun',

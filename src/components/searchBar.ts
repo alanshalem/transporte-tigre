@@ -39,11 +39,14 @@ function formatDistance(km: number): string {
   return `${km.toFixed(1)} km`;
 }
 
-function resolveService(serviceId: string, lines: BoatLine[]): { line: BoatLine; serviceType: string; destination: string } | null {
+function resolveService(
+  serviceId: string,
+  lines: BoatLine[],
+): { line: BoatLine; serviceType: string; destination: string } | null {
   for (const line of lines) {
     for (const svc of line.services) {
       if (svc.id === serviceId) {
-        const ida = svc.schedules.find(s => s.direction === 'ida');
+        const ida = svc.schedules.find((s) => s.direction === 'ida');
         return { line, serviceType: svc.type, destination: ida?.destination ?? '' };
       }
     }
@@ -51,8 +54,14 @@ function resolveService(serviceId: string, lines: BoatLine[]): { line: BoatLine;
   return null;
 }
 
-function dedupeByLine(matches: RouteMatch[], lines: BoatLine[]): (RouteMatch & { line: BoatLine; serviceType: string; destination: string })[] {
-  const seen = new Map<number, RouteMatch & { line: BoatLine; serviceType: string; destination: string }>();
+function dedupeByLine(
+  matches: RouteMatch[],
+  lines: BoatLine[],
+): (RouteMatch & { line: BoatLine; serviceType: string; destination: string })[] {
+  const seen = new Map<
+    number,
+    RouteMatch & { line: BoatLine; serviceType: string; destination: string }
+  >();
   for (const m of matches) {
     const resolved = resolveService(m.serviceId, lines);
     if (!resolved) continue;
@@ -101,7 +110,8 @@ function renderResultsList(
   const list = resultsDiv.querySelector('#search-results-list')!;
   for (const m of deduped) {
     const item = document.createElement('button');
-    item.className = 'result-item w-full flex items-center gap-3 px-3.5 py-2.5 text-left border-b border-gray-50 dark:border-[#1f2d3d]/60 last:border-0 cursor-pointer';
+    item.className =
+      'result-item w-full flex items-center gap-3 px-3.5 py-2.5 text-left border-b border-gray-50 dark:border-[#1f2d3d]/60 last:border-0 cursor-pointer';
     item.innerHTML = `
       <div class="w-9 h-9 rounded-lg flex items-center justify-center text-white text-xs font-bold shrink-0" style="background-color: ${m.line.color}; font-family: 'JetBrains Mono', monospace;">
         ${m.line.id}
@@ -145,7 +155,7 @@ export function createSearchBar(
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
           </button>
         </div>
-        <button type="button" id="geo-locate" class="shrink-0 w-10 h-[42px] flex items-center justify-center rounded-xl border border-gray-200/60 dark:border-[#1f2d3d]/60 backdrop-blur-md text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-[#1c2a3a] transition-colors cursor-pointer" style="background: var(--bg-elevated-soft); box-shadow: var(--search-shadow);" title="Mi ubicación" aria-label="Buscar mi ubicación">
+        <button type="button" id="geo-locate" class="shrink-0 w-10 h-10.5 flex items-center justify-center rounded-xl border border-gray-200/60 dark:border-[#1f2d3d]/60 backdrop-blur-md text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-[#1c2a3a] transition-colors cursor-pointer" style="background: var(--bg-elevated-soft); box-shadow: var(--search-shadow);" title="Mi ubicación" aria-label="Buscar mi ubicación">
           <svg id="geo-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
             <circle cx="12" cy="12" r="3"></circle>
             <path d="M12 2v3"></path>
@@ -223,14 +233,15 @@ export function createSearchBar(
         const main = parts[0];
         const sub = parts.slice(1, 3).join(',').trim();
         const item = document.createElement('button');
-        item.className = 'autocomplete-item w-full text-left px-3.5 py-2.5 border-b border-gray-50 dark:border-[#1f2d3d]/60 last:border-0 cursor-pointer';
+        item.className =
+          'autocomplete-item w-full text-left px-3.5 py-2.5 border-b border-gray-50 dark:border-[#1f2d3d]/60 last:border-0 cursor-pointer';
         item.innerHTML = `
           <div class="text-sm text-gray-800 dark:text-gray-100 truncate font-medium">${main}</div>
           <div class="text-xs text-gray-400 dark:text-gray-500 truncate">${sub}</div>
         `;
         item.addEventListener('click', () => {
           input.value = main;
-          const point: LatLng = [parseFloat(r.lat), parseFloat(r.lon)];
+          const point: LatLng = [Number.parseFloat(r.lat), Number.parseFloat(r.lon)];
           performSearch(point, main);
         });
         autocompleteList.appendChild(item);
@@ -278,7 +289,10 @@ export function createSearchBar(
 
       const first = results[0];
       input.value = first.display_name.split(',')[0];
-      performSearch([Number.parseFloat(first.lat), Number.parseFloat(first.lon)], first.display_name.split(',')[0]);
+      performSearch(
+        [Number.parseFloat(first.lat), Number.parseFloat(first.lon)],
+        first.display_name.split(',')[0],
+      );
     }
   });
 
@@ -360,6 +374,8 @@ export function createSearchBar(
 
   return {
     showResultsForPoint,
-    destroy() { wrapper.remove(); },
+    destroy() {
+      wrapper.remove();
+    },
   };
 }

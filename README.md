@@ -54,10 +54,10 @@ npm run preview
 
 ## Scripts
 
-| Script        | Acción                                 |
-|---------------|----------------------------------------|
-| `npm run dev` | Vite dev server con HMR                |
-| `npm run build` | Type-check (`tsc`) + build de Vite   |
+| Script            | Acción                             |
+| ----------------- | ---------------------------------- |
+| `npm run dev`     | Vite dev server con HMR            |
+| `npm run build`   | Type-check (`tsc`) + build de Vite |
 | `npm run preview` | Sirve `dist/` localmente           |
 
 ## Datos de las líneas

@@ -60,14 +60,14 @@ export function createApp(root: HTMLElement): void {
         <div id="map-container" class="flex-1 relative">
           <div id="map" class="absolute inset-0" aria-label="Mapa del Delta del Tigre" role="application"></div>
           <!-- Loading skeleton (shown until first tile loads) -->
-          <div id="map-skeleton" class="absolute inset-0 z-[600] flex items-center justify-center pointer-events-none" style="background: var(--surface);">
+          <div id="map-skeleton" class="absolute inset-0 z-600 flex items-center justify-center pointer-events-none transition-opacity duration-400" style="background: var(--surface);">
             <div class="flex flex-col items-center gap-3">
-              <div class="w-10 h-10 rounded-full border-[3px] border-gray-200 dark:border-[#1f2d3d] border-t-[var(--navy)] animate-spin" aria-hidden="true"></div>
+              <div class="w-10 h-10 rounded-full border-[3px] border-gray-200 dark:border-[#1f2d3d] border-t-(--navy) animate-spin" aria-hidden="true"></div>
               <p class="text-xs font-medium text-gray-500 dark:text-gray-400">Cargando mapa…</p>
             </div>
           </div>
           <!-- Live boats toggle -->
-          <button id="live-boats-toggle" class="boat-toggle boat-toggle--active absolute bottom-4 right-4 z-[1000] border border-gray-200/60 dark:border-[#1f2d3d]/60 rounded-xl px-3 py-2 flex items-center gap-2 cursor-pointer text-gray-700 dark:text-gray-200" style="background: var(--bg-elevated);" title="Lanchas en tiempo real">
+          <button id="live-boats-toggle" class="boat-toggle boat-toggle--active absolute bottom-4 right-4 z-1000 border border-gray-200/60 dark:border-[#1f2d3d]/60 rounded-xl px-3 py-2 flex items-center gap-2 cursor-pointer text-gray-700 dark:text-gray-200" style="background: var(--bg-elevated);" title="Lanchas en tiempo real">
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
               <path d="M2 20a2 2 0 0 0 2-2V8a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v10a2 2 0 0 0 2 2"></path>
               <path d="M7 20h10"></path>
@@ -77,9 +77,9 @@ export function createApp(root: HTMLElement): void {
             <span class="text-xs font-semibold" id="live-boats-label">EN VIVO</span>
             <span class="text-[10px] font-bold bg-white/20 rounded px-1.5 py-0.5" id="live-boats-count">0</span>
           </button>
-          <div id="empty-state" class="empty-state absolute top-16 left-3 right-14 pointer-events-none z-[500]">
+          <div id="empty-state" class="empty-state absolute top-16 left-3 right-14 pointer-events-none z-500">
             <div class="backdrop-blur-md rounded-xl px-3 py-2.5 flex items-center gap-2.5 border border-gray-200/60 dark:border-[#1f2d3d]/60" style="background: var(--bg-elevated-soft); box-shadow: var(--search-shadow);">
-              <div class="w-7 h-7 rounded-lg bg-gradient-to-br from-sky-100 to-blue-50 dark:from-[#1c2a3a] dark:to-[#13202e] flex items-center justify-center shrink-0">
+              <div class="w-7 h-7 rounded-lg bg-linear-to-br from-sky-100 to-blue-50 dark:from-[#1c2a3a] dark:to-[#13202e] flex items-center justify-center shrink-0">
                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="color: var(--navy);">
                   <path d="M2 12C2 7 6.5 3 12 3s10 4 10 9-4.5 9-10 9S2 17 2 12z"></path>
                   <path d="M12 3v18"></path>
@@ -165,7 +165,9 @@ export function createApp(root: HTMLElement): void {
     onClear() {
       mapManager.clearSearch();
     },
-    onMapClick() { /* handled via setMapClickHandler */ },
+    onMapClick() {
+      /* handled via setMapClickHandler */
+    },
   });
 
   // Map click → drop pin and find nearby routes
@@ -190,7 +192,7 @@ export function createApp(root: HTMLElement): void {
     const focusables = focusableInSidebar();
     if (focusables.length === 0) return;
     const first = focusables[0];
-    const last = focusables[focusables.length - 1];
+    const last = focusables.at(-1)!;
     if (e.shiftKey && document.activeElement === first) {
       e.preventDefault();
       last.focus();
@@ -209,7 +211,7 @@ export function createApp(root: HTMLElement): void {
       toggleIconOpen.classList.add('hidden');
       toggleIconClose.classList.remove('hidden');
       // Focus trap on mobile
-      if (window.matchMedia('(max-width: 767px)').matches) {
+      if (globalThis.matchMedia('(max-width: 767px)').matches) {
         lastFocusBeforeSidebar = document.activeElement as HTMLElement;
         const first = focusableInSidebar()[0];
         first?.focus();
@@ -322,6 +324,34 @@ export function createApp(root: HTMLElement): void {
   subscribeTheme((theme) => {
     mapManager.applyTheme(theme);
   });
+
+  // Hide map skeleton once first tile loads
+  const skeletonEl = document.getElementById('map-skeleton');
+  mapManager.onTilesLoaded(() => {
+    skeletonEl?.classList.add('opacity-0');
+    setTimeout(() => skeletonEl?.remove(), 400);
+  });
+
+  // Load holidays in background (FER column auto-detection)
+  loadHolidays().catch(() => {
+    // fallback already handled inside loadHolidays
+  });
+
+  // Restore deeplink state from URL
+  const urlState = readUrlState();
+  if (urlState.lineId !== undefined) {
+    const line = boatLines.find((l) => l.id === urlState.lineId);
+    if (line) {
+      state.selectedLine = line;
+      if (urlState.serviceId) {
+        const svc = line.services.find((s) => s.id === urlState.serviceId);
+        if (svc) {
+          state.selectedService = svc;
+          mapManager.showRoute(svc.id, line.color);
+        }
+      }
+    }
+  }
 
   update();
 }

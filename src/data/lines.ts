@@ -22,7 +22,8 @@ export const boatLines: BoatLine[] = [
     departurePoint: 'Est. Fluvial Tigre',
     color: '#457B9D',
     services: linea451Services,
-    holidayNote: 'Si el feriado cae día lunes, se repiten los horarios del día domingo. Si el feriado cae día viernes, se repiten los horarios del día sábado.',
+    holidayNote:
+      'Si el feriado cae día lunes, se repiten los horarios del día domingo. Si el feriado cae día viernes, se repiten los horarios del día sábado.',
   },
   {
     id: 452,
@@ -31,7 +32,8 @@ export const boatLines: BoatLine[] = [
     departurePoint: 'Est. Fluvial Tigre',
     color: '#2A9D8F',
     services: linea452Services,
-    holidayNote: 'Si el feriado cae día lunes, se repiten los horarios del día domingo. Si el feriado cae día viernes, se repiten los horarios del día sábado.',
+    holidayNote:
+      'Si el feriado cae día lunes, se repiten los horarios del día domingo. Si el feriado cae día viernes, se repiten los horarios del día sábado.',
   },
   {
     id: 453,
@@ -48,7 +50,8 @@ export const boatLines: BoatLine[] = [
     departurePoint: 'Est. Fluvial Tigre',
     color: '#F4A261',
     services: linea454Services,
-    holidayNote: 'Si el feriado cae día lunes, se repiten los horarios del día domingo. Si el feriado cae día viernes, se repiten los horarios del día sábado.',
+    holidayNote:
+      'Si el feriado cae día lunes, se repiten los horarios del día domingo. Si el feriado cae día viernes, se repiten los horarios del día sábado.',
   },
   {
     id: 455,

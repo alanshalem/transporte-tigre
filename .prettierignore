@@ -1,0 +1,11 @@
+dist/
+node_modules/
+public/
+docs/
+package-lock.json
+*.pdf
+*.png
+*.webp
+*.avif
+*.ico
+*.svg

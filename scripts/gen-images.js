@@ -8,13 +8,9 @@ const PUBLIC = resolve(__dirname, '..', 'public');
 const LOGO = resolve(PUBLIC, 'logo.png');
 
 async function genWebp() {
-  await sharp(LOGO)
-    .webp({ quality: 90 })
-    .toFile(resolve(PUBLIC, 'logo.webp'));
+  await sharp(LOGO).webp({ quality: 90 }).toFile(resolve(PUBLIC, 'logo.webp'));
 
-  await sharp(LOGO)
-    .avif({ quality: 70 })
-    .toFile(resolve(PUBLIC, 'logo.avif'));
+  await sharp(LOGO).avif({ quality: 70 }).toFile(resolve(PUBLIC, 'logo.avif'));
 
   console.log('logo.webp + logo.avif generated');
 }
@@ -46,9 +42,7 @@ async function genOgImage() {
   <text x="80" y="560" font-family="Outfit, system-ui, sans-serif" font-size="22" font-weight="500" fill="#9aa3b3">Mapa interactivo · Líneas 450 a 455 · Horarios y posición en vivo</text>
 </svg>`;
 
-  await sharp(Buffer.from(svg))
-    .png()
-    .toFile(resolve(PUBLIC, 'og-image.png'));
+  await sharp(Buffer.from(svg)).png().toFile(resolve(PUBLIC, 'og-image.png'));
 
   console.log('og-image.png generated');
 }

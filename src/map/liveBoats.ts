@@ -12,8 +12,10 @@ export interface ActiveBoat {
   destination: string;
 }
 
+const DURATION_RE = /(\d{1,2}):(\d{2})/;
+
 function parseDuration(durationStr: string): number {
-  const match = durationStr.match(/(\d{1,2}):(\d{2})/);
+  const match = DURATION_RE.exec(durationStr);
   if (!match) return 120;
   return Number.parseInt(match[1]) * 60 + Number.parseInt(match[2]);
 }
@@ -24,7 +26,15 @@ function parseTime(timeStr: string): number {
 }
 
 function getCurrentDayKey(): DayOfWeek {
-  const dayMap: DayOfWeek[] = ['domingo', 'lunes', 'martes', 'miercoles', 'jueves', 'viernes', 'sabado'];
+  const dayMap: DayOfWeek[] = [
+    'domingo',
+    'lunes',
+    'martes',
+    'miercoles',
+    'jueves',
+    'viernes',
+    'sabado',
+  ];
   return dayMap[new Date().getDay()];
 }
 
@@ -36,14 +46,14 @@ function getCurrentMinutes(): number {
 export function interpolateRoute(route: LatLng[], progress: number): LatLng {
   if (route.length === 0) return [0, 0];
   if (route.length === 1 || progress <= 0) return route[0];
-  if (progress >= 1) return route[route.length - 1];
+  if (progress >= 1) return route.at(-1)!;
 
   const distances: number[] = [0];
   let totalDist = 0;
   for (let i = 1; i < route.length; i++) {
     const dx = route[i][0] - route[i - 1][0];
     const dy = route[i][1] - route[i - 1][1];
-    totalDist += Math.sqrt(dx * dx + dy * dy);
+    totalDist += Math.hypot(dx, dy);
     distances.push(totalDist);
   }
 
@@ -62,7 +72,7 @@ export function interpolateRoute(route: LatLng[], progress: number): LatLng {
     }
   }
 
-  return route[route.length - 1];
+  return route.at(-1)!;
 }
 
 export function getActiveBoats(
@@ -93,9 +103,7 @@ export function getActiveBoats(
 
           if (elapsed >= 0 && elapsed <= durationMinutes) {
             const progress = elapsed / durationMinutes;
-            const route = schedule.direction === 'vuelta'
-              ? [...fullRoute].reverse()
-              : fullRoute;
+            const route = schedule.direction === 'vuelta' ? [...fullRoute].reverse() : fullRoute;
             const position = interpolateRoute(route, progress);
 
             boats.push({

@@ -36,7 +36,8 @@ export const linea455Services: Service[] = [
         },
       },
     ],
-    route: 'Muelle Municipal Camino Isleño - Río Paraná de las Palmas hasta Canal Gobernador de la Serna - El Tropezón.',
+    route:
+      'Muelle Municipal Camino Isleño - Río Paraná de las Palmas hasta Canal Gobernador de la Serna - El Tropezón.',
     duration: '00:30 / 00:40 HS',
     routeCoordinates: [],
   },
@@ -75,7 +76,8 @@ export const linea455Services: Service[] = [
         },
       },
     ],
-    route: 'Muelle Municipal Camino Isleño - Río Paraná de las Palmas hasta Hospital Boca Carabelas.',
+    route:
+      'Muelle Municipal Camino Isleño - Río Paraná de las Palmas hasta Hospital Boca Carabelas.',
     duration: '00:15 HS',
     routeCoordinates: [],
   },
@@ -114,7 +116,8 @@ export const linea455Services: Service[] = [
         },
       },
     ],
-    route: 'Muelle Municipal Camino Isleño - Río Paraná de las Palmas aguas arriba hasta Arroyo Fermín (Isla Cardales).',
+    route:
+      'Muelle Municipal Camino Isleño - Río Paraná de las Palmas aguas arriba hasta Arroyo Fermín (Isla Cardales).',
     duration: '00:30 HS',
     routeCoordinates: [],
   },

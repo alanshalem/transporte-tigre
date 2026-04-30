@@ -10,12 +10,19 @@
     <link rel="icon" type="image/png" sizes="96x96" href="/favicon-96x96.png" />
     <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
     <link rel="manifest" href="/site.webmanifest" />
-    <meta name="theme-color" content="#0B3954" />
+    <meta name="theme-color" content="#0B3954" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#0a1520" media="(prefers-color-scheme: dark)" />
 
     <!-- Primary SEO -->
     <title>Transporte Fluvial - Delta del Tigre</title>
-    <meta name="description" content="Mapa interactivo de las lanchas colectivas del Delta del Tigre. Líneas 450 a 455, horarios, recorridos y posición en tiempo real." />
-    <meta name="keywords" content="Delta del Tigre, lanchas colectivas, transporte fluvial, Tigre, horarios, líneas 450 451 452 453 454 455, Estación Fluvial Tigre" />
+    <meta
+      name="description"
+      content="Mapa interactivo de las lanchas colectivas del Delta del Tigre. Líneas 450 a 455, horarios, recorridos y posición en tiempo real."
+    />
+    <meta
+      name="keywords"
+      content="Delta del Tigre, lanchas colectivas, transporte fluvial, Tigre, horarios, líneas 450 451 452 453 454 455, Estación Fluvial Tigre"
+    />
     <meta name="author" content="Transporte Fluvial Delta del Tigre" />
     <meta name="robots" content="index, follow" />
     <link rel="canonical" href="https://transporte-tigre.vercel.app/" />
@@ -24,16 +31,22 @@
     <meta property="og:type" content="website" />
     <meta property="og:locale" content="es_AR" />
     <meta property="og:title" content="Transporte Fluvial - Delta del Tigre" />
-    <meta property="og:description" content="Mapa interactivo de las lanchas colectivas del Delta del Tigre. Líneas 450 a 455, horarios, recorridos y posición en tiempo real." />
-    <meta property="og:image" content="/web-app-manifest-512x512.png" />
+    <meta
+      property="og:description"
+      content="Mapa interactivo de las lanchas colectivas del Delta del Tigre. Líneas 450 a 455, horarios, recorridos y posición en tiempo real."
+    />
+    <meta property="og:image" content="/og-image.png" />
     <meta property="og:url" content="https://transporte-tigre.vercel.app/" />
     <meta property="og:site_name" content="Transporte Fluvial Delta del Tigre" />
 
     <!-- Twitter -->
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:title" content="Transporte Fluvial - Delta del Tigre" />
-    <meta name="twitter:description" content="Mapa interactivo de las lanchas colectivas del Delta del Tigre. Líneas 450 a 455, horarios, recorridos y posición en tiempo real." />
-    <meta name="twitter:image" content="/web-app-manifest-512x512.png" />
+    <meta
+      name="twitter:description"
+      content="Mapa interactivo de las lanchas colectivas del Delta del Tigre. Líneas 450 a 455, horarios, recorridos y posición en tiempo real."
+    />
+    <meta name="twitter:image" content="/og-image.png" />
 
     <!-- Kill any stale Service Workers / Caches from other localhost projects -->
     <script>
@@ -41,15 +54,21 @@
         try {
           if ('serviceWorker' in navigator) {
             navigator.serviceWorker.getRegistrations().then(function (regs) {
-              regs.forEach(function (r) { r.unregister(); });
+              regs.forEach(function (r) {
+                r.unregister();
+              });
             });
           }
-          if (window.caches && caches.keys) {
+          if (globalThis.caches && caches.keys) {
             caches.keys().then(function (keys) {
-              keys.forEach(function (k) { caches.delete(k); });
+              keys.forEach(function (k) {
+                caches.delete(k);
+              });
             });
           }
-        } catch (e) {}
+        } catch {
+          /* SW/cache APIs unavailable; safe to skip */
+        }
       })();
     </script>
 
@@ -58,17 +77,22 @@
       (function () {
         try {
           var stored = localStorage.getItem('tigre-theme');
-          var prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+          var prefersDark = globalThis.matchMedia('(prefers-color-scheme: dark)').matches;
           var theme = stored || (prefersDark ? 'dark' : 'light');
           if (theme === 'dark') document.documentElement.classList.add('dark');
-        } catch (e) {}
+        } catch {
+          /* localStorage unavailable; default light */
+        }
       })();
     </script>
 
     <!-- Fonts -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@500&display=swap"
+      rel="stylesheet"
+    />
   </head>
   <body>
     <div id="app"></div>

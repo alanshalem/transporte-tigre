@@ -23,10 +23,12 @@ function applyTheme(theme: Theme): void {
 }
 
 export function setTheme(theme: Theme, origin?: Origin): void {
-  const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  const startViewTransition = (document as Document & {
-    startViewTransition?: (cb: () => void) => unknown;
-  }).startViewTransition;
+  const reduceMotion = globalThis.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const startViewTransition = (
+    document as Document & {
+      startViewTransition?: (cb: () => void) => unknown;
+    }
+  ).startViewTransition;
 
   if (origin) {
     document.documentElement.style.setProperty('--theme-x', `${origin.x}px`);

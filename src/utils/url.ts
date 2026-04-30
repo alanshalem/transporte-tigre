@@ -4,7 +4,7 @@ export interface UrlState {
 }
 
 export function readUrlState(): UrlState {
-  const params = new URLSearchParams(window.location.search);
+  const params = new URLSearchParams(globalThis.location.search);
   const lineRaw = params.get('linea');
   const lineId = lineRaw ? Number.parseInt(lineRaw, 10) : undefined;
   const serviceId = params.get('svc') ?? undefined;
@@ -15,11 +15,11 @@ export function readUrlState(): UrlState {
 }
 
 export function writeUrlState(state: UrlState): void {
-  const params = new URLSearchParams(window.location.search);
-  if (state.lineId !== undefined) {
-    params.set('linea', String(state.lineId));
-  } else {
+  const params = new URLSearchParams(globalThis.location.search);
+  if (state.lineId === undefined) {
     params.delete('linea');
+  } else {
+    params.set('linea', String(state.lineId));
   }
   if (state.serviceId) {
     params.set('svc', state.serviceId);
@@ -27,6 +27,6 @@ export function writeUrlState(state: UrlState): void {
     params.delete('svc');
   }
   const qs = params.toString();
-  const url = qs ? `${window.location.pathname}?${qs}` : window.location.pathname;
-  window.history.replaceState(null, '', url);
+  const url = qs ? `${globalThis.location.pathname}?${qs}` : globalThis.location.pathname;
+  globalThis.history.replaceState(null, '', url);
 }

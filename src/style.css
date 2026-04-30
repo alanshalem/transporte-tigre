@@ -1,5 +1,5 @@
-@import "tailwindcss";
-@import "leaflet/dist/leaflet.css";
+@import 'tailwindcss';
+@import 'leaflet/dist/leaflet.css';
 
 @custom-variant dark (&:where(.dark, .dark *));
 
@@ -35,20 +35,20 @@
 }
 
 :root {
-  --navy: #0B3954;
+  --navy: #0b3954;
   --navy-light: #1a4d6e;
   --navy-dark: #062638;
-  --surface: #F7F8FA;
-  --surface-warm: #FAFAF7;
+  --surface: #f7f8fa;
+  --surface-warm: #fafaf7;
   --bg-elevated: #ffffff;
   --bg-elevated-soft: rgba(255, 255, 255, 0.95);
   --bg-hover: #f3f4f6;
-  --border: #E2E6EC;
-  --border-light: #EEF1F5;
+  --border: #e2e6ec;
+  --border-light: #eef1f5;
   --text-primary: #1a2332;
   --text-secondary: #5a6578;
   --text-muted: #8d95a3;
-  --accent-gold: #E9A319;
+  --accent-gold: #e9a319;
   --scrollbar-thumb: #d1d5db;
   --scrollbar-thumb-hover: #9ca3af;
   --search-shadow: 0 4px 24px rgba(11, 57, 84, 0.12);
@@ -87,7 +87,11 @@
 
 body {
   margin: 0;
-  font-family: 'Outfit', system-ui, -apple-system, sans-serif;
+  font-family:
+    'Outfit',
+    system-ui,
+    -apple-system,
+    sans-serif;
   -webkit-font-smoothing: antialiased;
   background: var(--surface);
   color: var(--text-primary);
@@ -180,7 +184,7 @@ body {
   content: '';
   position: absolute;
   inset: 0;
-  background: linear-gradient(135deg, rgba(255,255,255,0.15), transparent);
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.15), transparent);
   opacity: 0;
   transition: opacity 0.2s;
 }
@@ -191,7 +195,9 @@ body {
 
 .line-btn--active {
   transform: scale(1.06);
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.18), 0 0 0 2px rgba(255, 255, 255, 0.2);
+  box-shadow:
+    0 4px 16px rgba(0, 0, 0, 0.18),
+    0 0 0 2px rgba(255, 255, 255, 0.2);
 }
 
 /* ── Service items ── */
@@ -222,8 +228,9 @@ body {
 /* ── Schedule panel ── */
 .schedule-panel {
   box-shadow: var(--panel-shadow);
-  transition: max-height 0.35s cubic-bezier(0.4, 0, 0.2, 1),
-              opacity 0.25s ease;
+  transition:
+    max-height 0.35s cubic-bezier(0.4, 0, 0.2, 1),
+    opacity 0.25s ease;
 }
 
 .schedule-toggle-btn {
@@ -292,18 +299,27 @@ body {
 }
 
 @keyframes nextPulse {
-  0%, 100% { opacity: 0.65; }
-  50% { opacity: 1; }
+  0%,
+  100% {
+    opacity: 0.65;
+  }
+  50% {
+    opacity: 1;
+  }
 }
 
 /* ── Search bar ── */
 .search-input {
   font-family: 'Outfit', system-ui, sans-serif;
-  transition: box-shadow 0.2s, border-color 0.2s;
+  transition:
+    box-shadow 0.2s,
+    border-color 0.2s;
 }
 
 .search-input:focus {
-  box-shadow: 0 0 0 3px rgba(11, 57, 84, 0.1), var(--search-shadow);
+  box-shadow:
+    0 0 0 3px rgba(11, 57, 84, 0.1),
+    var(--search-shadow);
   border-color: var(--navy-light);
 }
 
@@ -345,12 +361,15 @@ body {
 /* ── Results panel ── */
 .results-card {
   box-shadow: var(--search-shadow);
+  -webkit-backdrop-filter: blur(8px);
   backdrop-filter: blur(8px);
   animation: fadeInUp 0.2s ease;
 }
 
 .result-item {
-  transition: background 0.12s, transform 0.12s;
+  transition:
+    background 0.12s,
+    transform 0.12s;
 }
 
 .result-item:hover {
@@ -434,6 +453,7 @@ body {
 /* ── Mobile overlay ── */
 .sidebar-overlay {
   background: var(--overlay);
+  -webkit-backdrop-filter: blur(2px);
   backdrop-filter: blur(2px);
   transition: opacity 0.3s;
 }
@@ -446,29 +466,29 @@ body {
 
 /* ── Direction badge ── */
 .dir-badge-ida {
-  background: #E8F4FD;
-  color: #0B3954;
+  background: #c5e2f8;
+  color: #062638;
 }
 
 .dir-badge-vuelta {
-  background: #E6F6F0;
-  color: #0F5132;
+  background: #c9ebd8;
+  color: #0a3924;
 }
 
 .dark .dir-badge-ida {
-  background: rgba(78, 163, 216, 0.18);
-  color: #7cc4eb;
+  background: #1a3a52;
+  color: #d6ecfa;
 }
 
 .dark .dir-badge-vuelta {
-  background: rgba(34, 197, 94, 0.16);
-  color: #6ee7a3;
+  background: #1a3d2c;
+  color: #c8f0d8;
 }
 
 /* ── Holiday note ── */
 .holiday-note {
-  background: linear-gradient(135deg, #FEF9EE, #FFF7E0);
-  border: 1px solid #F0D98A;
+  background: linear-gradient(135deg, #fef9ee, #fff7e0);
+  border: 1px solid #f0d98a;
 }
 
 .dark .holiday-note {

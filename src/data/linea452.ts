@@ -81,8 +81,7 @@ export const linea452Services: Service[] = [
     route:
       'Río Tigre - Río Luján - Río Sarmiento - Río Capitán - Arroyo Toro - Arroyo Antequera - Cruce Río Paraná de las Palmas - Arroyo Paycarabí - Arroyo Estudiante - Paraná de las Palmas',
     duration: '01:30 / 01:45 HS',
-    notes:
-      'Va por Antequera y vuelve por Río Capitán. Llega hasta Hostería Bosques de Bohemia.',
+    notes: 'Va por Antequera y vuelve por Río Capitán. Llega hasta Hostería Bosques de Bohemia.',
     routeCoordinates: [],
   },
   {
@@ -123,8 +122,7 @@ export const linea452Services: Service[] = [
     route:
       'Río Tigre - Río Luján - Río Sarmiento - Río San Antonio - Arroyo Dorado - Desvío Arroyo Súbalos hasta la Sonámbula - Arroyo Arroyón',
     duration: '01:30 / 02:00 HS',
-    notes:
-      'Va hasta Arroyo Dorado y sube por Río Capitán hasta el Viejo Molino.',
+    notes: 'Va hasta Arroyo Dorado y sube por Río Capitán hasta el Viejo Molino.',
     routeCoordinates: [],
   },
   {
@@ -244,8 +242,7 @@ export const linea452Services: Service[] = [
         },
       },
     ],
-    route:
-      'Río Tigre - Río Luján - Río Sarmiento - Arroyo Espera - Desvío Casa Ganarchelli',
+    route: 'Río Tigre - Río Luján - Río Sarmiento - Arroyo Espera - Desvío Casa Ganarchelli',
     duration: '01:30 HS',
     notes: 'Llega hasta el Canal 8. EP 8.',
     routeCoordinates: [],
@@ -285,8 +282,7 @@ export const linea452Services: Service[] = [
         },
       },
     ],
-    route:
-      'Río Tigre - Río Luján - Arroyo Abra Vieja hasta Río Sarmiento',
+    route: 'Río Tigre - Río Luján - Arroyo Abra Vieja hasta Río Sarmiento',
     duration: '01:30 HS',
     routeCoordinates: [],
   },
@@ -325,11 +321,9 @@ export const linea452Services: Service[] = [
         },
       },
     ],
-    route:
-      'Río Tigre - Río Luján - Río Sarmiento - Río Capitán - Paraná de las Palmas',
+    route: 'Río Tigre - Río Luján - Río Sarmiento - Río Capitán - Paraná de las Palmas',
     duration: '01:30 HS',
-    notes:
-      'Ingresa al Arroyo Rama Negra. Llega hasta El Viejo Molino.',
+    notes: 'Ingresa al Arroyo Rama Negra. Llega hasta El Viejo Molino.',
     routeCoordinates: [],
   },
   {
