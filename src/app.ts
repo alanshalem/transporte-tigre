@@ -5,6 +5,9 @@ import { renderScheduleTable } from './components/scheduleTable';
 import { MapManager, getRouteData } from './map/mapManager';
 import { createSearchBar } from './components/searchBar';
 import { getActiveBoats } from './map/liveBoats';
+import { subscribeTheme } from './theme';
+import { readUrlState, writeUrlState } from './utils/url';
+import { loadHolidays } from './utils/holidays';
 
 interface AppState {
   selectedLine: BoatLine | null;
@@ -28,13 +31,13 @@ export function createApp(root: HTMLElement): void {
   root.innerHTML = `
     <div class="flex h-full relative">
       <!-- Mobile toggle -->
-      <button id="sidebar-toggle" class="md:hidden fixed top-4 left-4 z-50 bg-white/95 backdrop-blur-sm shadow-lg rounded-xl p-2.5 border border-gray-200/60 hover:bg-white transition-all duration-200 active:scale-95" aria-label="Toggle sidebar">
-        <svg id="toggle-icon-open" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="text-gray-700">
+      <button id="sidebar-toggle" class="md:hidden fixed top-4 left-4 z-50 bg-white/95 dark:bg-[#13202e]/95 backdrop-blur-sm shadow-lg rounded-xl p-2.5 border border-gray-200/60 dark:border-[#1f2d3d]/60 hover:bg-white dark:hover:bg-[#1c2a3a] transition-all duration-200 active:scale-95" aria-label="Toggle sidebar">
+        <svg id="toggle-icon-open" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="text-gray-700 dark:text-gray-200">
           <line x1="3" y1="12" x2="21" y2="12"></line>
           <line x1="3" y1="6" x2="21" y2="6"></line>
           <line x1="3" y1="18" x2="21" y2="18"></line>
         </svg>
-        <svg id="toggle-icon-close" class="hidden text-gray-700" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+        <svg id="toggle-icon-close" class="hidden text-gray-700 dark:text-gray-200" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
           <line x1="18" y1="6" x2="6" y2="18"></line>
           <line x1="6" y1="6" x2="18" y2="18"></line>
         </svg>
@@ -44,18 +47,27 @@ export function createApp(root: HTMLElement): void {
       <div id="sidebar-overlay" class="hidden sidebar-overlay fixed inset-0 z-30 md:hidden"></div>
 
       <!-- Sidebar -->
-      <aside id="sidebar" class="bg-white border-r border-gray-200/80 shrink-0 overflow-y-auto sidebar-scroll
+      <aside id="sidebar" class="border-r border-gray-200/80 dark:border-[#1f2d3d]/80 shrink-0 overflow-y-auto sidebar-scroll
         fixed md:relative inset-y-0 left-0 z-40 sidebar-slide -translate-x-full md:translate-x-0"
-        style="width: var(--sidebar-width); max-width: 340px;">
+        style="width: var(--sidebar-width); max-width: 340px; background: var(--bg-elevated);"
+        aria-label="Panel de líneas y servicios"
+        role="navigation">
       </aside>
 
       <!-- Main content -->
       <div class="flex-1 flex flex-col min-w-0">
         <!-- Map -->
         <div id="map-container" class="flex-1 relative">
-          <div id="map" class="absolute inset-0"></div>
+          <div id="map" class="absolute inset-0" aria-label="Mapa del Delta del Tigre" role="application"></div>
+          <!-- Loading skeleton (shown until first tile loads) -->
+          <div id="map-skeleton" class="absolute inset-0 z-[600] flex items-center justify-center pointer-events-none" style="background: var(--surface);">
+            <div class="flex flex-col items-center gap-3">
+              <div class="w-10 h-10 rounded-full border-[3px] border-gray-200 dark:border-[#1f2d3d] border-t-[var(--navy)] animate-spin" aria-hidden="true"></div>
+              <p class="text-xs font-medium text-gray-500 dark:text-gray-400">Cargando mapa…</p>
+            </div>
+          </div>
           <!-- Live boats toggle -->
-          <button id="live-boats-toggle" class="boat-toggle boat-toggle--active absolute bottom-4 right-4 z-[1000] bg-white border border-gray-200/60 rounded-xl px-3 py-2 flex items-center gap-2 cursor-pointer" title="Lanchas en tiempo real">
+          <button id="live-boats-toggle" class="boat-toggle boat-toggle--active absolute bottom-4 right-4 z-[1000] border border-gray-200/60 dark:border-[#1f2d3d]/60 rounded-xl px-3 py-2 flex items-center gap-2 cursor-pointer text-gray-700 dark:text-gray-200" style="background: var(--bg-elevated);" title="Lanchas en tiempo real">
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
               <path d="M2 20a2 2 0 0 0 2-2V8a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v10a2 2 0 0 0 2 2"></path>
               <path d="M7 20h10"></path>
@@ -65,10 +77,10 @@ export function createApp(root: HTMLElement): void {
             <span class="text-xs font-semibold" id="live-boats-label">EN VIVO</span>
             <span class="text-[10px] font-bold bg-white/20 rounded px-1.5 py-0.5" id="live-boats-count">0</span>
           </button>
-          <div id="empty-state" class="empty-state absolute inset-0 flex items-center justify-center pointer-events-none z-[500]">
-            <div class="bg-white/92 backdrop-blur-md rounded-2xl p-8 text-center max-w-xs mx-4" style="box-shadow: var(--search-shadow);">
-              <div class="w-14 h-14 rounded-2xl bg-gradient-to-br from-sky-100 to-blue-50 flex items-center justify-center mx-auto mb-4">
-                <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#0B3954" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+          <div id="empty-state" class="empty-state absolute top-16 left-3 right-14 pointer-events-none z-[500]">
+            <div class="backdrop-blur-md rounded-xl px-3 py-2.5 flex items-center gap-2.5 border border-gray-200/60 dark:border-[#1f2d3d]/60" style="background: var(--bg-elevated-soft); box-shadow: var(--search-shadow);">
+              <div class="w-7 h-7 rounded-lg bg-gradient-to-br from-sky-100 to-blue-50 dark:from-[#1c2a3a] dark:to-[#13202e] flex items-center justify-center shrink-0">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="color: var(--navy);">
                   <path d="M2 12C2 7 6.5 3 12 3s10 4 10 9-4.5 9-10 9S2 17 2 12z"></path>
                   <path d="M12 3v18"></path>
                   <path d="M2 12h20"></path>
@@ -76,23 +88,25 @@ export function createApp(root: HTMLElement): void {
                   <path d="M4.5 17h15"></path>
                 </svg>
               </div>
-              <h3 class="text-base font-bold text-gray-900 mb-1.5">Explorá el Delta</h3>
-              <p class="text-sm text-gray-500 leading-relaxed">Seleccioná una línea para ver recorridos, o tocá el mapa para encontrar lanchas cercanas</p>
+              <div class="min-w-0 flex-1">
+                <h3 class="text-xs font-bold text-gray-900 dark:text-gray-100 leading-tight">Explorá el Delta</h3>
+                <p class="text-[11px] text-gray-500 dark:text-gray-400 leading-snug truncate">Seleccioná una línea o tocá el mapa</p>
+              </div>
             </div>
           </div>
         </div>
 
         <!-- Schedule panel -->
-        <div id="schedule-panel" class="hidden schedule-panel border-t border-gray-200/80 bg-white overflow-hidden">
-          <button id="schedule-toggle" class="schedule-toggle-btn w-full flex items-center justify-between px-5 py-2.5 bg-white cursor-pointer border-b border-gray-100">
+        <div id="schedule-panel" class="hidden schedule-panel border-t border-gray-200/80 dark:border-[#1f2d3d]/80 overflow-hidden" style="background: var(--bg-elevated);">
+          <button id="schedule-toggle" class="schedule-toggle-btn w-full flex items-center justify-between px-5 py-2.5 cursor-pointer border-b border-gray-100 dark:border-[#1f2d3d]" style="background: var(--bg-elevated);">
             <div class="flex items-center gap-2">
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-gray-400">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-gray-400 dark:text-gray-500">
                 <circle cx="12" cy="12" r="10"></circle>
                 <polyline points="12 6 12 12 16 14"></polyline>
               </svg>
-              <span class="text-xs font-semibold text-gray-500 uppercase tracking-wider">Horarios y recorrido</span>
+              <span class="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider">Horarios y recorrido</span>
             </div>
-            <svg id="schedule-chevron" class="schedule-chevron text-gray-400" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <svg id="schedule-chevron" class="schedule-chevron text-gray-400 dark:text-gray-500" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
               <polyline points="6 9 12 15 18 9"></polyline>
             </svg>
           </button>
@@ -161,6 +175,31 @@ export function createApp(root: HTMLElement): void {
     emptyState.classList.add('hidden');
   });
 
+  let lastFocusBeforeSidebar: HTMLElement | null = null;
+
+  function focusableInSidebar(): HTMLElement[] {
+    return Array.from(
+      sidebarEl.querySelectorAll<HTMLElement>(
+        'button, [href], input, [tabindex]:not([tabindex="-1"])',
+      ),
+    );
+  }
+
+  function trapFocus(e: KeyboardEvent) {
+    if (e.key !== 'Tab') return;
+    const focusables = focusableInSidebar();
+    if (focusables.length === 0) return;
+    const first = focusables[0];
+    const last = focusables[focusables.length - 1];
+    if (e.shiftKey && document.activeElement === first) {
+      e.preventDefault();
+      last.focus();
+    } else if (!e.shiftKey && document.activeElement === last) {
+      e.preventDefault();
+      first.focus();
+    }
+  }
+
   function toggleSidebar() {
     state.sidebarOpen = !state.sidebarOpen;
     if (state.sidebarOpen) {
@@ -169,19 +208,44 @@ export function createApp(root: HTMLElement): void {
       sidebarOverlay.classList.remove('hidden');
       toggleIconOpen.classList.add('hidden');
       toggleIconClose.classList.remove('hidden');
+      // Focus trap on mobile
+      if (window.matchMedia('(max-width: 767px)').matches) {
+        lastFocusBeforeSidebar = document.activeElement as HTMLElement;
+        const first = focusableInSidebar()[0];
+        first?.focus();
+        sidebarEl.addEventListener('keydown', trapFocus);
+      }
     } else {
       sidebarEl.classList.add('-translate-x-full');
       sidebarEl.classList.remove('translate-x-0');
       sidebarOverlay.classList.add('hidden');
       toggleIconOpen.classList.remove('hidden');
       toggleIconClose.classList.add('hidden');
+      sidebarEl.removeEventListener('keydown', trapFocus);
+      lastFocusBeforeSidebar?.focus();
+      lastFocusBeforeSidebar = null;
     }
   }
+
+  // Esc closes sidebar on mobile
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && state.sidebarOpen) {
+      toggleSidebar();
+    }
+  });
 
   sidebarToggle.addEventListener('click', toggleSidebar);
   sidebarOverlay.addEventListener('click', toggleSidebar);
 
+  function persistUrl() {
+    writeUrlState({
+      lineId: state.selectedLine?.id,
+      serviceId: state.selectedService?.id,
+    });
+  }
+
   function update() {
+    persistUrl();
     renderSidebar(sidebarEl, boatLines, state.selectedLine, state.selectedService, {
       onLineSelect(line) {
         if (state.selectedLine?.id === line.id) {
@@ -202,6 +266,9 @@ export function createApp(root: HTMLElement): void {
         if (state.sidebarOpen) {
           toggleSidebar();
         }
+        update();
+      },
+      onThemeChange() {
         update();
       },
     });
@@ -250,6 +317,11 @@ export function createApp(root: HTMLElement): void {
   // Update boats every 15 seconds
   updateLiveBoats();
   setInterval(updateLiveBoats, 15000);
+
+  // Theme changes: swap map tiles
+  subscribeTheme((theme) => {
+    mapManager.applyTheme(theme);
+  });
 
   update();
 }

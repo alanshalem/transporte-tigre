@@ -780,11 +780,22 @@ export function findNearestRoutes(target: LatLng, maxResults = 10, maxDistKm = 5
   return results.slice(0, maxResults);
 }
 
+const TILE_LIGHT = {
+  url: 'https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png',
+  attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> &copy; <a href="https://carto.com/attributions">CARTO</a>',
+};
+
+const TILE_DARK = {
+  url: 'https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png',
+  attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> &copy; <a href="https://carto.com/attributions">CARTO</a>',
+};
+
 export class MapManager {
   private map: L.Map | null = null;
   private currentLayers: L.Layer[] = [];
   private searchLayers: L.Layer[] = [];
   private boatLayers: L.Layer[] = [];
+  private tileLayer: L.TileLayer | null = null;
   private defaultCenter: LatLng = [-34.40, -58.65];
   private defaultZoom = 11;
 
@@ -797,16 +808,25 @@ export class MapManager {
 
     L.control.zoom({ position: 'topright' }).addTo(this.map);
 
-    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-      attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>',
-      maxZoom: 18,
-    }).addTo(this.map);
+    this.applyTheme(document.documentElement.classList.contains('dark') ? 'dark' : 'light');
 
     this.map.on('click', (e: L.LeafletMouseEvent) => {
       if (this.onMapClick) {
         this.onMapClick([e.latlng.lat, e.latlng.lng]);
       }
     });
+  }
+
+  applyTheme(theme: 'light' | 'dark'): void {
+    if (!this.map) return;
+    if (this.tileLayer) {
+      this.map.removeLayer(this.tileLayer);
+    }
+    const cfg = theme === 'dark' ? TILE_DARK : TILE_LIGHT;
+    this.tileLayer = L.tileLayer(cfg.url, {
+      attribution: cfg.attribution,
+      maxZoom: 19,
+    }).addTo(this.map);
   }
 
   setMapClickHandler(handler: ((latlng: LatLng) => void) | null): void {
