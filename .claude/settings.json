@@ -1,0 +1,38 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(python3 -c \"import PyPDF2; print\\(''available''\\)\")",
+      "Bash(python -c \"import PyPDF2; print\\(''available''\\)\")",
+      "Bash(pip install:*)",
+      "Bash(C:/Users/alans/miniconda3/Scripts/pip install:*)",
+      "Bash(C:/Users/alans/miniconda3/python -c \":*)",
+      "Bash(ls \"c:/Users/alans/OneDrive/Escritorio/transporte-tigre/\"linea454*)",
+      "Read(//c/Users/alans/**)",
+      "Bash(pdftotext C:/Users/alans/OneDrive/Escritorio/transporte-tigre/LINEA_450.pdf -)",
+      "Bash(pdftotext C:/Users/alans/OneDrive/Escritorio/transporte-tigre/LINEA_451.pdf -)",
+      "Bash(pdftotext C:/Users/alans/OneDrive/Escritorio/transporte-tigre/LINEA_455.pdf -)",
+      "Bash(pdftotext \"C:/Users/alans/OneDrive/Escritorio/transporte-tigre/LINEA_452.pdf\" -)",
+      "Bash(pdftotext \"C:/Users/alans/OneDrive/Escritorio/transporte-tigre/LINEA_453.pdf\" -)",
+      "Bash(pdftotext \"C:/Users/alans/OneDrive/Escritorio/transporte-tigre/LINEA_454.pdf\" -)",
+      "Bash(npm create:*)",
+      "Bash(npx --yes create-vite@latest tmp-vite --template vanilla-ts)",
+      "Bash(cp tmp-vite/package.json tmp-vite/tsconfig.json tmp-vite/vite.config.ts tmp-vite/index.html .)",
+      "Bash(cp -r tmp-vite/src .)",
+      "Bash(cp -r tmp-vite/public .)",
+      "Bash(rm -rf tmp-vite)",
+      "Bash(npm install:*)",
+      "Bash(rm -f src/counter.ts)",
+      "Bash(rm -rf src/assets)",
+      "Bash(rm -f public/icons.svg)",
+      "Bash(npx tsc:*)",
+      "Bash(timeout 10 npx vite --host)",
+      "Bash(for f:*)",
+      "Bash(do sed:*)",
+      "Bash(done)",
+      "Bash(npx vite:*)",
+      "WebFetch(domain:overpass-api.de)",
+      "Bash(find c:UsersalansOneDriveEscritoriotransporte-tigre/src -type f \\\\\\(-name *.js -o -name *.ts -o -name *.tsx -o -name *.jsx \\\\\\))",
+      "WebSearch"
+    ]
+  }
+}

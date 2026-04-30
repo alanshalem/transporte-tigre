@@ -1,0 +1,376 @@
+@import "tailwindcss";
+@import "leaflet/dist/leaflet.css";
+
+:root {
+  --navy: #0B3954;
+  --navy-light: #1a4d6e;
+  --navy-dark: #062638;
+  --surface: #F7F8FA;
+  --surface-warm: #FAFAF7;
+  --border: #E2E6EC;
+  --border-light: #EEF1F5;
+  --text-primary: #1a2332;
+  --text-secondary: #5a6578;
+  --text-muted: #8d95a3;
+  --accent-gold: #E9A319;
+  --sidebar-width: 340px;
+  --search-shadow: 0 4px 24px rgba(11, 57, 84, 0.12);
+  --card-shadow: 0 1px 4px rgba(0, 0, 0, 0.06), 0 0 0 1px rgba(0, 0, 0, 0.03);
+  --panel-shadow: 0 -4px 24px rgba(0, 0, 0, 0.08);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: 'Outfit', system-ui, -apple-system, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  background: var(--surface);
+  color: var(--text-primary);
+}
+
+#app {
+  height: 100vh;
+  height: 100dvh;
+  width: 100vw;
+  overflow: hidden;
+}
+
+/* ── Leaflet overrides ── */
+.leaflet-container {
+  height: 100%;
+  width: 100%;
+  z-index: 0;
+  font-family: 'Outfit', system-ui, sans-serif;
+}
+
+.leaflet-control-zoom {
+  border: none !important;
+  box-shadow: var(--card-shadow) !important;
+  border-radius: 12px !important;
+  overflow: hidden;
+}
+
+.leaflet-control-zoom a {
+  width: 36px !important;
+  height: 36px !important;
+  line-height: 36px !important;
+  font-size: 16px !important;
+  color: var(--navy) !important;
+  background: white !important;
+  border-bottom: 1px solid var(--border-light) !important;
+}
+
+.leaflet-control-zoom a:hover {
+  background: var(--surface) !important;
+}
+
+.leaflet-popup-content-wrapper {
+  border-radius: 12px !important;
+  box-shadow: var(--search-shadow) !important;
+  font-family: 'Outfit', system-ui, sans-serif !important;
+}
+
+.leaflet-popup-tip {
+  box-shadow: none !important;
+}
+
+/* ── Sidebar scrollbar ── */
+.sidebar-scroll::-webkit-scrollbar {
+  width: 5px;
+}
+.sidebar-scroll::-webkit-scrollbar-track {
+  background: transparent;
+}
+.sidebar-scroll::-webkit-scrollbar-thumb {
+  background: #d1d5db;
+  border-radius: 10px;
+}
+.sidebar-scroll::-webkit-scrollbar-thumb:hover {
+  background: #9ca3af;
+}
+
+/* ── Line buttons ── */
+.line-btn {
+  font-family: 'JetBrains Mono', 'Outfit', monospace;
+  letter-spacing: 0.02em;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+  overflow: hidden;
+}
+
+.line-btn::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, rgba(255,255,255,0.15), transparent);
+  opacity: 0;
+  transition: opacity 0.2s;
+}
+
+.line-btn:hover::after {
+  opacity: 1;
+}
+
+.line-btn--active {
+  transform: scale(1.06);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.18), 0 0 0 2px rgba(255, 255, 255, 0.2);
+}
+
+/* ── Service items ── */
+.service-item {
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+}
+
+.service-item:hover {
+  transform: translateX(2px);
+}
+
+.service-item--active {
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.12);
+}
+
+.service-item--active::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 3px;
+  background: rgba(255, 255, 255, 0.5);
+  border-radius: 0 2px 2px 0;
+}
+
+/* ── Schedule panel ── */
+.schedule-panel {
+  box-shadow: var(--panel-shadow);
+  transition: max-height 0.35s cubic-bezier(0.4, 0, 0.2, 1),
+              opacity 0.25s ease;
+}
+
+.schedule-toggle-btn {
+  transition: background 0.15s;
+}
+
+.schedule-toggle-btn:hover {
+  background: var(--surface);
+}
+
+.schedule-chevron {
+  transition: transform 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.schedule-chevron--collapsed {
+  transform: rotate(180deg);
+}
+
+/* ── Schedule table ── */
+.schedule-table {
+  border-collapse: separate;
+  border-spacing: 0;
+}
+
+.schedule-table th {
+  font-family: 'Outfit', sans-serif;
+  font-weight: 600;
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.schedule-table td {
+  font-family: 'JetBrains Mono', 'Outfit', monospace;
+  font-size: 0.78rem;
+  font-weight: 500;
+}
+
+.schedule-table td.current-day {
+  position: relative;
+}
+
+.schedule-table td.current-day::before {
+  content: '';
+  position: absolute;
+  inset: 2px;
+  border-radius: 4px;
+  background: currentColor;
+  opacity: 0.06;
+}
+
+/* ── Search bar ── */
+.search-input {
+  font-family: 'Outfit', system-ui, sans-serif;
+  transition: box-shadow 0.2s, border-color 0.2s;
+}
+
+.search-input:focus {
+  box-shadow: 0 0 0 3px rgba(11, 57, 84, 0.1), var(--search-shadow);
+  border-color: var(--navy-light);
+}
+
+.search-input::placeholder {
+  color: var(--text-muted);
+  font-weight: 400;
+}
+
+/* ── Autocomplete dropdown ── */
+.autocomplete-item {
+  transition: background 0.12s;
+}
+
+.autocomplete-item:hover {
+  background: var(--surface);
+}
+
+/* ── Empty state ── */
+.empty-state {
+  animation: fadeInUp 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* ── Slide transitions ── */
+.sidebar-slide {
+  transition: transform 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* ── Results panel ── */
+.results-card {
+  box-shadow: var(--search-shadow);
+  backdrop-filter: blur(8px);
+  animation: fadeInUp 0.2s ease;
+}
+
+.result-item {
+  transition: background 0.12s, transform 0.12s;
+}
+
+.result-item:hover {
+  background: var(--surface);
+  transform: translateX(2px);
+}
+
+.result-item:active {
+  transform: scale(0.99);
+}
+
+/* ── Live boat markers ── */
+.boat-marker {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 2.5px solid white;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+  position: relative;
+  cursor: pointer;
+  transition: transform 0.15s;
+}
+
+.boat-marker:hover {
+  transform: scale(1.2);
+  z-index: 10000 !important;
+}
+
+.boat-marker-num {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 9px;
+  font-weight: 700;
+  color: white;
+  line-height: 1;
+  letter-spacing: -0.02em;
+}
+
+.boat-marker-pulse {
+  position: absolute;
+  inset: -5px;
+  border-radius: 50%;
+  border: 2px solid;
+  opacity: 0;
+  animation: boatPulse 2.5s ease-out infinite;
+}
+
+@keyframes boatPulse {
+  0% {
+    transform: scale(0.8);
+    opacity: 0.6;
+  }
+  100% {
+    transform: scale(1.6);
+    opacity: 0;
+  }
+}
+
+/* ── Boat toggle button ── */
+.boat-toggle {
+  transition: all 0.2s;
+  box-shadow: var(--card-shadow);
+}
+
+.boat-toggle:hover {
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.1);
+}
+
+.boat-toggle--active {
+  background: var(--navy) !important;
+  color: white !important;
+  border-color: var(--navy) !important;
+}
+
+/* ── Mobile overlay ── */
+.sidebar-overlay {
+  background: rgba(11, 57, 84, 0.4);
+  backdrop-filter: blur(2px);
+  transition: opacity 0.3s;
+}
+
+/* ── Route info box ── */
+.route-info-box {
+  background: linear-gradient(135deg, var(--surface) 0%, #f0f2f5 100%);
+  border: 1px solid var(--border-light);
+}
+
+/* ── Direction badge ── */
+.dir-badge-ida {
+  background: #E8F4FD;
+  color: #0B3954;
+}
+
+.dir-badge-vuelta {
+  background: #E6F6F0;
+  color: #0F5132;
+}
+
+/* ── Holiday note ── */
+.holiday-note {
+  background: linear-gradient(135deg, #FEF9EE, #FFF7E0);
+  border: 1px solid #F0D98A;
+}
+
+/* ── Mobile responsive ── */
+@media (max-width: 767px) {
+  :root {
+    --sidebar-width: 100%;
+  }
+
+  .schedule-table th,
+  .schedule-table td {
+    padding-left: 4px;
+    padding-right: 4px;
+    font-size: 0.7rem;
+  }
+}
